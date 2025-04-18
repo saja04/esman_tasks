@@ -284,15 +284,6 @@ public class UserTasks
 
     }
 
-    public bool CreateLayout (string filePath) {
-
-        string text = "TasksQueue: \nCompletedTasks: ";
-
-        File.WriteAllText(filePath, text);
-
-        return true;
-    }
-
     public LayoutTask Find(string taskName, string filePath)
     {
         string[] lines = File.ReadAllLines(filePath);
