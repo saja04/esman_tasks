@@ -1,4 +1,4 @@
-// TODO COMMAND SHOULD BE !DONE
+// TODO ADD HOW LONG THE TASK TOOK TO COMPLETE
 
 using System;
 using System.IO;
@@ -166,9 +166,14 @@ public class UserTasks
         string layoutFilePath = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(filePath)), "tasksLayout.txt"); // goes two directories up
         LayoutTask foundTask = Find(taskName, filePath);
 
-        if(foundTask.Name != null || foundTask.Name != ""){
+        if(foundTask.DateAdded == "" || foundTask.DateAdded == null || foundTask.DateAdded.Replace(" ", "") == ""){
+            return 2; // taskname not found on existent tasks
+        }
+
+        if(foundTask.Name != null || foundTask.Name != "" || foundTask.Name.Replace(" ","") != ""){
             int status = UpdateLayout(foundTask, layoutFilePath);
-            return status; //2 if there are already 5 tasks completed
+            Delete(foundTask.Name, filePath);
+            return status; // status returns 10 if it is all ok 
         } else return 1; // 1 if there's no found task with that name
 
     }
@@ -463,18 +468,26 @@ public class CPHInline
 
         int status = userTasks.Check(taskName, userFilePath);
 
-            if(status == 10) {
-                CPH.LogInfo("La tarea se agrego al layout");
-            } else { CPH.LogInfo("Ocurrio un error al agregar la tarea al layout");}
-        // // TASKS
-        // string taskName = (string)args["input0"];
-        // string msgId = (string) args["msgId"];
 
-        // UserTasks userTasks = new UserTasks();
+        string message = "";
 
-        // bool status = userTasks.Delete(taskName, userFilePath);
+        if(status == 10) {
+            message = "Tarea completada!";
+            CPH.LogInfo("La tarea se agrego al layout y se borro de la db del usuario");
+            CPH.SendMessage(message, false, false);
 
-        // string message = "";
+        } 
+        else if (status == 2) {
+                message = "No existe una tarea con ese nombre";
+                CPH.LogInfo("Tarea no encontrada");
+                CPH.SendMessage(message, false, false);
+
+        }
+        else if (status == 1) {
+                message = "Ocurrio un error inesperado al agregar la tarea al layout";
+                CPH.LogInfo("Ocurrio un error inesperado al agregar la tarea al layout");
+                CPH.SendMessage(message, false, false);
+        }
 
         // if(status == true){
         //     message = $"Completaste tu tarea '{taskName}'.";
