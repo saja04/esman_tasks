@@ -272,41 +272,42 @@ public class CPHInline
 
 
         // TASKS
-        string taskName = (string)args["input0"];
-        string taskDescription = (string)args["input1"];
+        string taskName = (string)args["rawInput"];
         string msgId = (string) args["msgId"];
 
-        Task task = new Task();
-        UserTasks userTasks = new UserTasks();
+        // Task task = new Task();
+        // UserTasks userTasks = new UserTasks();
 
-        task.TaskCreator = username;
-        task.TaskName = taskName;
-        task.TaskDescription = taskDescription;
-        task.TaskCompleted = false;
-        task.TaskDateAdded = formattedDate;
-        task.TaskDateCompleted = formattedDate;
+        // task.TaskCreator = username;
+        // task.TaskName = taskName;
+        // task.TaskDescription = taskDescription;
+        // task.TaskCompleted = false;
+        // task.TaskDateAdded = formattedDate;
+        // task.TaskDateCompleted = formattedDate;
 
 
-        int status = userTasks.Check(user, task, userFilePath);
+        // int status = userTasks.Check(user, task, userFilePath);
 
-        string message = "";
+            CPH.LogInfo(taskName);
 
-        if(status == 10){
-            message = $"{username} creo una nueva tarea 📝: '{taskName}'";
-            CPH.TwitchAnnounce(message, false, "red", false);
-        } else if (status == 1) {
-            message= "El maximo de tareas para subs es de 5!";
-            CPH.TwitchReplyToMessage(message, msgId, false, false);
-        } else if (status == 2) {
-            message= "Solo podes tener una tarea a la vez. Subeate para tener hasta 5!";
-            CPH.TwitchReplyToMessage(message, msgId, false, false);
-        } else if (status == 3) {
-            message = "Ocurrio un error inesperado al crear la tarea";
-            CPH.TwitchReplyToMessage(message, msgId, false, false);
-        } else if (status == 4) {
-            message = "Ya tenes una tarea con ese nombre. Proba con otro nombre o borra la tarea existente.";
-            CPH.TwitchReplyToMessage(message, msgId, false, false);
-        }
+
+        // string message = "";
+        // if(status == 10){
+        //     message = $"{username} creo una nueva tarea 📝: '{taskName}'";
+        //     CPH.TwitchAnnounce(message, false, "red", false);
+        // } else if (status == 1) {
+        //     message= "El maximo de tareas para subs es de 5!";
+        //     CPH.TwitchReplyToMessage(message, msgId, false, false);
+        // } else if (status == 2) {
+        //     message= "Solo podes tener una tarea a la vez. Subeate para tener hasta 5!";
+        //     CPH.TwitchReplyToMessage(message, msgId, false, false);
+        // } else if (status == 3) {
+        //     message = "Ocurrio un error inesperado al crear la tarea";
+        //     CPH.TwitchReplyToMessage(message, msgId, false, false);
+        // } else if (status == 4) {
+        //     message = "Ya tenes una tarea con ese nombre. Proba con otro nombre o borra la tarea existente.";
+        //     CPH.TwitchReplyToMessage(message, msgId, false, false);
+        // }
 
 
         return true;
