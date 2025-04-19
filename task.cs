@@ -3,8 +3,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
-public class User
-{
+public class User {
     public string UserName { get; set; }
     public string UserId { get; set; }
     public bool IsOp { get; set; }
@@ -25,19 +24,14 @@ public class User
     }
 }
 
-public class Task
-{
+public class Task {
     public string TaskName;
-    public bool TaskCompleted;
     public string TaskCreator;
-    public string TaskDescription;
     public string TaskDateAdded;
-    public string TaskDateCompleted;
 }
 
 public class UserFile {
-    public void Check(User user, string filePath)
-    {
+    public void Check(User user, string filePath) {
         if (!File.Exists(filePath))
         {
             CreateFile(user, filePath, null);
@@ -47,8 +41,7 @@ public class UserFile {
             UpdateData(user, filePath);
         }
     }
-    public void UpdateData(User newUser, string filePath)
-    {
+    public void UpdateData(User newUser, string filePath) {
 
         User oldUser = ReadUser(filePath);
         string tasks = ReadTasks(filePath);
@@ -59,8 +52,7 @@ public class UserFile {
         CreateFile(newUser, filePath, tasks);
 
     }
-    public User ReadUser(string filePath)
-    {
+    public User ReadUser(string filePath) {
         string[] lines = File.ReadAllLines(filePath);
 
         User user = new User();
@@ -93,8 +85,7 @@ public class UserFile {
         return user;
     }
 
-    public string ReadTasks(string filePath)
-    {
+    public string ReadTasks(string filePath) {
 
         string[] lines = File.ReadAllLines(filePath);
         string tasks = "";
@@ -121,7 +112,7 @@ public class UserFile {
             else if (line.StartsWith("LastUpdated:"))
             {
                 continue;
-            }
+            }            
             else
             {
                 tasks = tasks + "\n" + line;
@@ -131,57 +122,47 @@ public class UserFile {
         return tasks;
     }
 
-    public void CreateFile(User user, string filePath, string? tasks)
-    {
+    public void CreateFile(User user, string filePath, string? tasks) {
         string userData = $"UserName: {user.UserName}\nUserId: {user.UserId}\nIsOp: {user.IsOp}\nDateAdded: {user.DateAdded}\nLastUpdated: {user.LastUpdated}";
 
         File.WriteAllText(filePath, userData + tasks);
     }
 }
 
-public class UserTasks
-{
-    public int Check(User user, Task task, string filePath)
-    {
+public class UserTasks {
+    public int Check(User user, Task task, string filePath) {
 
         if (File.Exists(filePath))
         {
-
             Task[] readedTasks = Read(filePath);
 
+            if (readedTasks.Length == 5) {
+                return 1;
+            }
+            if (readedTasks.Length >= 1 && !user.IsOp) {
+                return 2;
+            }
 
             foreach(Task t in readedTasks) {
                 if(t.TaskName == task.TaskName) {
                     return 4;
                 }
             }
-
-            if (readedTasks.Length == 6)
-            {
-                return 1;
-            }
-            else if (readedTasks.Length >= 1 && !user.IsOp)
-            {
-                return 2;
-            }
-            else
-            {
-                Create(task, filePath);
-                return 10;
-            }
+        
+            Create(task, filePath);
+            return 10;
+            
         }
         else return 3;
     }
-    public void Create(Task newTask, string filePath)
-    {
+    public void Create(Task newTask, string filePath) {
 
-        string taskData = $"TaskName: {newTask.TaskName}\nTaskCompleted: {newTask.TaskCompleted}\nTaskCreator: {newTask.TaskCreator}\nTaskDateAdded: {newTask.TaskDateAdded}\nTaskDateCompleted: {newTask.TaskDateCompleted}\nTaskDescription: {newTask.TaskDescription}";
+        string taskData = $"TaskName: {newTask.TaskName}\nTaskCreator: {newTask.TaskCreator}\nTaskDateAdded: {newTask.TaskDateAdded}";
 
         File.AppendAllText(filePath, "\n" + taskData);
 
     }
-    public Task[] Read(string filePath)
-    {
+    public Task[] Read(string filePath) {
 
         string[] lines = File.ReadAllLines(filePath);
 
@@ -194,51 +175,43 @@ public class UserTasks
             return allTasks.ToArray();
         }
 
-        for (int i = 5; i < lines.Length; i++)
-        {
+
+        int taskLineCounter = 0;
+        for (int i = 5; i < lines.Length; i++) {
 
             string line = lines[i];
 
             if (line.StartsWith("TaskName:"))
             {
                 readedTask.TaskName = line.Substring("TaskName:".Length).Trim();
-            }
-            else if (line.StartsWith("TaskCompleted:"))
-            {
-                readedTask.TaskCompleted = bool.Parse(line.Substring("TaskCompleted:".Length).Trim());
+                taskLineCounter ++;
             }
             else if (line.StartsWith("TaskCreator:"))
             {
                 readedTask.TaskCreator = lines[0].Substring("UserName:".Length).Trim();
+                taskLineCounter ++;
             }
             else if (line.StartsWith("TaskDateAdded:"))
             {
                 readedTask.TaskDateAdded = line.Substring("TaskDateAdded:".Length).Trim();
-            }
-            else if (line.StartsWith("TaskDateCompleted:"))
-            {
-                readedTask.TaskDateCompleted = line.Substring("TaskDateCompleted:".Length).Trim();
-            }
-            else if (line.StartsWith("TaskDescription:"))
-            {
-                readedTask.TaskDescription = line.Substring("TaskDescription:".Length).Trim();
+                taskLineCounter ++;
             }
 
-
-            if ((i - 5) % 6 == 5)
+            if (taskLineCounter == 3)
             {
                 allTasks.Add(readedTask);
                 readedTask = new Task();
+                taskLineCounter = 0;
             }
 
         }
         
         return allTasks.ToArray();
     }
+
 }
 
-public class CPHInline
-{
+public class CPHInline {
     public bool Execute()
     {
         string currentDir = Directory.GetCurrentDirectory();
@@ -275,39 +248,35 @@ public class CPHInline
         string taskName = (string)args["rawInput"];
         string msgId = (string) args["msgId"];
 
-        // Task task = new Task();
-        // UserTasks userTasks = new UserTasks();
+        Task task = new Task();
+        UserTasks userTasks = new UserTasks();
 
-        // task.TaskCreator = username;
-        // task.TaskName = taskName;
-        // task.TaskDescription = taskDescription;
-        // task.TaskCompleted = false;
-        // task.TaskDateAdded = formattedDate;
-        // task.TaskDateCompleted = formattedDate;
+        task.TaskCreator = username;
+        task.TaskName = taskName;
+        task.TaskDateAdded = formattedDate;
 
 
-        // int status = userTasks.Check(user, task, userFilePath);
-
-            CPH.LogInfo(taskName);
+        int status = userTasks.Check(user, task, userFilePath);
 
 
-        // string message = "";
-        // if(status == 10){
-        //     message = $"{username} creo una nueva tarea 📝: '{taskName}'";
-        //     CPH.TwitchAnnounce(message, false, "red", false);
-        // } else if (status == 1) {
-        //     message= "El maximo de tareas para subs es de 5!";
-        //     CPH.TwitchReplyToMessage(message, msgId, false, false);
-        // } else if (status == 2) {
-        //     message= "Solo podes tener una tarea a la vez. Subeate para tener hasta 5!";
-        //     CPH.TwitchReplyToMessage(message, msgId, false, false);
-        // } else if (status == 3) {
-        //     message = "Ocurrio un error inesperado al crear la tarea";
-        //     CPH.TwitchReplyToMessage(message, msgId, false, false);
-        // } else if (status == 4) {
-        //     message = "Ya tenes una tarea con ese nombre. Proba con otro nombre o borra la tarea existente.";
-        //     CPH.TwitchReplyToMessage(message, msgId, false, false);
-        // }
+        string message = "";
+        if(status == 10){
+            message = $"{username} comenzó una nueva tarea 📝: '{taskName}'";
+            CPH.TwitchAnnounce(message, false, "red", false);
+        } else if (status == 1) {
+            message= "Usaste todas tus tareas disponibles! Intentá borrar/completar algunas.";
+            CPH.TwitchReplyToMessage(message, msgId, false, false);
+        } else if (status == 2) {
+            message= "Sólo podes tener una tarea a la vez. Subeate para tener hasta 5!";
+            CPH.TwitchReplyToMessage(message, msgId, false, false);
+        } else if (status == 3) {
+            message = "Ocurrió un error inesperado al crear la tarea.";
+            CPH.TwitchReplyToMessage(message, msgId, false, false);
+            CPH.LogInfo("user file does not exist, try debugging bitch.");
+        } else if (status == 4) {
+            message = "Ya tenés una tarea con ese nombre. Probá con otro nombre o borrá la tarea existente.";
+            CPH.TwitchReplyToMessage(message, msgId, false, false);
+        }
 
 
         return true;

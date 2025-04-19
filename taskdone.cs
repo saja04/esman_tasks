@@ -5,8 +5,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
-public class User
-{
+public class User {
     public string UserName { get; set; }
     public string UserId { get; set; }
     public bool IsOp { get; set; }
@@ -27,14 +26,10 @@ public class User
     }
 }
 
-public class Task
-{
+public class Task {
     public string TaskName;
-    public bool TaskCompleted;
     public string TaskCreator;
-    public string TaskDescription;
     public string TaskDateAdded;
-    public string TaskDateCompleted;
 }
 
 public class LayoutTask {
@@ -50,8 +45,7 @@ public class TaskLayoutContainer {
 
 }
 
-public class UserFile
-{
+public class UserFile {
     public void Check(User user, string filePath)
     {
         if (!File.Exists(filePath))
@@ -167,18 +161,18 @@ public class UserTasks
         LayoutTask foundTask = Find(taskName, filePath);
 
         if(foundTask.DateAdded == "" || foundTask.DateAdded == null || foundTask.DateAdded.Replace(" ", "") == ""){
-            return 2; // taskname not found on existent tasks
+            return 1; // taskname not found on existent tasks
         }
 
         if(foundTask.Name != null || foundTask.Name != "" || foundTask.Name.Replace(" ","") != ""){
             int status = UpdateLayout(foundTask, layoutFilePath);
             Delete(foundTask.Name, filePath);
             return status; // status returns 10 if it is all ok 
-        } else return 1; // 1 if there's no found task with that name
+        }
+
+        return 3; // unexpected error
 
     }
-
-
 
     public string TaskToText(Task newTask, string filePath)
     {
@@ -186,14 +180,13 @@ public class UserTasks
             return "";
         }
         else{
-            string taskData = $"\nTaskName: {newTask.TaskName}\nTaskCompleted: {newTask.TaskCompleted}\nTaskCreator: {newTask.TaskCreator}\nTaskDateAdded: {newTask.TaskDateAdded}\nTaskDateCompleted: {newTask.TaskDateCompleted}\nTaskDescription: {newTask.TaskDescription}";
+            string taskData = $"\nTaskName: {newTask.TaskName}\nTaskCreator: {newTask.TaskCreator}\nTaskDateAdded: {newTask.TaskDateAdded}";
             return taskData;    
         }
         
     }
 
-    public Task[] Read(string filePath)
-    {
+    public Task[] Read(string filePath) {
 
         string[] lines = File.ReadAllLines(filePath);
 
@@ -201,54 +194,47 @@ public class UserTasks
 
         Task readedTask = new Task();
 
-        if (lines.Length < 6)
+        if (lines.Length <= 5)
         {
             return allTasks.ToArray();
         }
 
-        for (int i = 5; i < lines.Length; i++)
-        {
+
+        int taskLineCounter = 0;
+        for (int i = 5; i < lines.Length; i++) {
+
             string line = lines[i];
 
             if (line.StartsWith("TaskName:"))
             {
                 readedTask.TaskName = line.Substring("TaskName:".Length).Trim();
-            }
-            else if (line.StartsWith("TaskCompleted:"))
-            {
-                readedTask.TaskCompleted = bool.Parse(line.Substring("TaskCompleted:".Length).Trim());
+                taskLineCounter ++;
             }
             else if (line.StartsWith("TaskCreator:"))
             {
                 readedTask.TaskCreator = lines[0].Substring("UserName:".Length).Trim();
+                taskLineCounter ++;
             }
             else if (line.StartsWith("TaskDateAdded:"))
             {
                 readedTask.TaskDateAdded = line.Substring("TaskDateAdded:".Length).Trim();
-            }
-            else if (line.StartsWith("TaskDateCompleted:"))
-            {
-                readedTask.TaskDateCompleted = line.Substring("TaskDateCompleted:".Length).Trim();
-            }
-            else if (line.StartsWith("TaskDescription:"))
-            {
-                readedTask.TaskDescription = line.Substring("TaskDescription:".Length).Trim();
+                taskLineCounter ++;
             }
 
-
-            if ((i - 5) % 6 == 5)
+            if (taskLineCounter == 3)
             {
                 allTasks.Add(readedTask);
                 readedTask = new Task();
+                taskLineCounter = 0;
             }
 
         }
+        
         return allTasks.ToArray();
     }
 
     
-    public bool Delete(string taskName, string filePath)
-    {
+    public bool Delete(string taskName, string filePath) {
 
         string[] lines = File.ReadAllLines(filePath);
 
@@ -284,8 +270,7 @@ public class UserTasks
 
     }
 
-    public LayoutTask Find(string taskName, string filePath)
-    {
+    public LayoutTask Find(string taskName, string filePath) {
         string[] lines = File.ReadAllLines(filePath);
 
         LayoutTask readedTask = new LayoutTask();
@@ -295,16 +280,14 @@ public class UserTasks
             return readedTask;
         }
 
-        bool foundTask = false;
-
         for (int i = 5; i < lines.Length; i++)
         {
             string line = lines[i];
             if (line.StartsWith("TaskName:") && line.Substring("TaskName:".Length).Trim() == taskName || line.Substring("TaskName:".Length).Trim().Replace(" ", "") == taskName)
             {
                      readedTask.Name = line.Substring("TaskName:".Length).Trim();
-                     readedTask.Creator = lines[i+2].Substring("TaskCreator:".Length).Trim();
-                     readedTask.DateAdded = lines[i+3].Substring("TaskDateAdded:".Length).Trim();
+                     readedTask.Creator = lines[i+1].Substring("TaskCreator:".Length).Trim();
+                     readedTask.DateAdded = lines[i+2].Substring("TaskDateAdded:".Length).Trim();
 
                     TimeZoneInfo buenosAiresTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
                     DateTime currentDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, buenosAiresTimeZone);
@@ -320,7 +303,7 @@ public class UserTasks
 
     }
 
-    public TaskLayoutContainer ReadLayout (string filePath){
+    public TaskLayoutContainer ReadLayout (string filePath) {
 
         string[] lines = File.ReadAllLines(filePath);
 
@@ -377,12 +360,12 @@ public class UserTasks
         return allTasks;
     }
 
-    public string TaskLayoutToText(LayoutTask newTask){
+    public string TaskLayoutToText(LayoutTask newTask) {
         string taskText = $"\nTaskName: {newTask.Name}\nCreator: {newTask.Creator}\nDateAdded: {newTask.DateAdded}\nDateCompleted: {newTask.DateCompleted}";
         return taskText;
     }
 
-    public int UpdateLayout (LayoutTask newCompletedTask, string filePath){
+    public int UpdateLayout (LayoutTask newCompletedTask, string filePath) {
 
         // OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT
         TaskLayoutContainer oldTasks = ReadLayout(filePath);
@@ -423,8 +406,6 @@ public class UserTasks
 
 }
 
-    
-
 
 public class CPHInline
 {
@@ -439,7 +420,7 @@ public class CPHInline
         bool isSubscribed = (bool)args["isSubscribed"];
         bool isMod = (bool)args["isModerator"];
         bool isVip = (bool)args["isVip"];
-        string taskName = (string)args["input0"];
+        string taskName = (string)args["rawInput"];
 
 
         bool userIsOp = isSubscribed || isVip || isMod ? true : false;
@@ -468,25 +449,17 @@ public class CPHInline
             CPH.SendMessage(message, false, false);
 
         } 
-        else if (status == 2) {
+        else if (status == 1) {
                 message = "No existe una tarea con ese nombre";
-                CPH.LogInfo("Tarea no encontrada");
                 CPH.SendMessage(message, false, false);
 
         }
-        else if (status == 1) {
+        else if (status == 3) {
                 message = "Ocurrio un error inesperado al agregar la tarea al layout";
                 CPH.LogInfo("Ocurrio un error inesperado al agregar la tarea al layout");
                 CPH.SendMessage(message, false, false);
         }
 
-        // if(status == true){
-        //     message = $"Completaste tu tarea '{taskName}'.";
-        //     CPH.TwitchReplyToMessage(message, msgId, false, false);
-        // } else if (status == false) {
-        //     message= "No tienes una tarea con ese nombre. Usa !taskslist para ver tus tareas.";
-        //     CPH.TwitchReplyToMessage(message, msgId, false, false);
-        // } 
 
 
         return true;

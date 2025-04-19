@@ -3,8 +3,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
-public class User
-{
+public class User {
     public string UserName { get; set; }
     public string UserId { get; set; }
     public bool IsOp { get; set; }
@@ -25,20 +24,14 @@ public class User
     }
 }
 
-public class Task
-{
+public class Task {
     public string TaskName;
-    public bool TaskCompleted;
     public string TaskCreator;
-    public string TaskDescription;
     public string TaskDateAdded;
-    public string TaskDateCompleted;
 }
 
-public class UserFile
-{
-    public void Check(User user, string filePath)
-    {
+public class UserFile {
+    public void Check(User user, string filePath) {
         if (!File.Exists(filePath))
         {
             CreateFile(user, filePath, null);
@@ -49,8 +42,7 @@ public class UserFile
         }
     }
 
-    public void UpdateData(User newUser, string filePath)
-    {
+    public void UpdateData(User newUser, string filePath) {
 
         User oldUser = ReadUser(filePath);
         string tasks = ReadTasks(filePath);
@@ -62,8 +54,7 @@ public class UserFile
 
     }
 
-    public User ReadUser(string filePath)
-    {
+    public User ReadUser(string filePath) {
         string[] lines = File.ReadAllLines(filePath);
 
         User user = new User();
@@ -96,8 +87,7 @@ public class UserFile
         return user;
     }
 
-    public string ReadTasks(string filePath)
-    {
+    public string ReadTasks(string filePath) {
 
         string[] lines = File.ReadAllLines(filePath);
         string tasks = "";
@@ -134,8 +124,7 @@ public class UserFile
         return tasks;
     }
 
-    public void CreateFile(User user, string filePath, string? tasks)
-    {
+    public void CreateFile(User user, string filePath, string? tasks) {
         string userData = $"UserName: {user.UserName}\nUserId: {user.UserId}\nIsOp: {user.IsOp}\nDateAdded: {user.DateAdded}\nLastUpdated: {user.LastUpdated}";
 
         File.WriteAllText(filePath, userData + tasks);
@@ -143,23 +132,19 @@ public class UserFile
 
 }
 
-public class UserTasks
-{
-
-    public string TaskToText(Task newTask, string filePath)
-    {
+public class UserTasks {
+    public string TaskToText(Task newTask, string filePath) {
         if(newTask.TaskName == null){
             return "";
         }
         else{
-            string taskData = $"\nTaskName: {newTask.TaskName}\nTaskCompleted: {newTask.TaskCompleted}\nTaskCreator: {newTask.TaskCreator}\nTaskDateAdded: {newTask.TaskDateAdded}\nTaskDateCompleted: {newTask.TaskDateCompleted}\nTaskDescription: {newTask.TaskDescription}";
+            string taskData = $"\nTaskName: {newTask.TaskName}\nTaskCreator: {newTask.TaskCreator}\nTaskDateAdded: {newTask.TaskDateAdded}";
             return taskData;    
         }
         
     }
 
-    public Task[] Read(string filePath)
-    {
+    public Task[] Read(string filePath) {
 
         string[] lines = File.ReadAllLines(filePath);
 
@@ -167,53 +152,46 @@ public class UserTasks
 
         Task readedTask = new Task();
 
-        if (lines.Length < 6)
+        if (lines.Length <= 5)
         {
             return allTasks.ToArray();
         }
 
-        for (int i = 5; i < lines.Length; i++)
-        {
+
+        int taskLineCounter = 0;
+        for (int i = 5; i < lines.Length; i++) {
+
             string line = lines[i];
 
             if (line.StartsWith("TaskName:"))
             {
                 readedTask.TaskName = line.Substring("TaskName:".Length).Trim();
-            }
-            else if (line.StartsWith("TaskCompleted:"))
-            {
-                readedTask.TaskCompleted = bool.Parse(line.Substring("TaskCompleted:".Length).Trim());
+                taskLineCounter ++;
             }
             else if (line.StartsWith("TaskCreator:"))
             {
                 readedTask.TaskCreator = lines[0].Substring("UserName:".Length).Trim();
+                taskLineCounter ++;
             }
             else if (line.StartsWith("TaskDateAdded:"))
             {
                 readedTask.TaskDateAdded = line.Substring("TaskDateAdded:".Length).Trim();
-            }
-            else if (line.StartsWith("TaskDateCompleted:"))
-            {
-                readedTask.TaskDateCompleted = line.Substring("TaskDateCompleted:".Length).Trim();
-            }
-            else if (line.StartsWith("TaskDescription:"))
-            {
-                readedTask.TaskDescription = line.Substring("TaskDescription:".Length).Trim();
+                taskLineCounter ++;
             }
 
-
-            if ((i - 5) % 6 == 5)
+            if (taskLineCounter == 3)
             {
                 allTasks.Add(readedTask);
                 readedTask = new Task();
+                taskLineCounter = 0;
             }
 
         }
+        
         return allTasks.ToArray();
     }
-    
-    public bool Delete(string taskName, string filePath)
-    {
+ 
+    public bool Delete(string taskName, string filePath) {
 
         string[] lines = File.ReadAllLines(filePath);
 
@@ -248,10 +226,10 @@ public class UserTasks
         }
 
     }
+
 }
 
-public class CPHInline
-{
+public class CPHInline {
     public bool Execute()
     {
         string currentDir = Directory.GetCurrentDirectory();
@@ -282,7 +260,7 @@ public class CPHInline
         userFile.Check(user, userFilePath);
 
         // TASKS
-        string taskName = (string)args["input0"];
+        string taskName = (string)args["rawInput"];
         string msgId = (string) args["msgId"];
 
         UserTasks userTasks = new UserTasks();

@@ -1,6 +1,6 @@
 #### To Do
-- [ ] delete task desc from all scripts.
-- [ ] task names should be able to contain spaces. also bye description. //CURRENT
-- [ ] task should add the task to the TasksInQueue tasklists inside tasksLayout.txt
+- [X] delete task description, datecompleted and completed from all scripts.
+- [X] task names should be able to contain spaces. also bye description. //CURRENT
+- [X] task should add the task to the TasksInQueue tasklists inside tasksLayout.txt
 - [ ] ADD HOW LONG THE TASK TOOK TO COMPLETE to taskdone.
 - [ ] ADD FOCUS COMMAND 
