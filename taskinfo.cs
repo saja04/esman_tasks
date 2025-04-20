@@ -3,8 +3,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
-public class User
-{
+public class User {
     public string UserName { get; set; }
     public string UserId { get; set; }
     public bool IsOp { get; set; }
@@ -25,20 +24,25 @@ public class User
     }
 }
 
-public class Task
-{
+public class Task {
     public string TaskName;
-    public bool TaskCompleted;
     public string TaskCreator;
-    public string TaskDescription;
     public string TaskDateAdded;
-    public string TaskDateCompleted;
 }
 
-public class UserFile
-{
-    public void Check(User user, string filePath)
-    {
+public class TaskInfo {
+    public string TaskName;
+    public string TaskCreator;
+    public string CompletedTimeAgo;
+}
+
+public class CheckReturn {
+    public bool Found;
+    public TaskInfo Task;
+}
+
+public class UserFile {
+    public void Check(User user, string filePath) {
         if (!File.Exists(filePath))
         {
             CreateFile(user, filePath, null);
@@ -48,8 +52,8 @@ public class UserFile
             UpdateData(user, filePath);
         }
     }
-    public void UpdateData(User newUser, string filePath)
-    {
+
+    public void UpdateData(User newUser, string filePath) {
 
         User oldUser = ReadUser(filePath);
         string tasks = ReadTasks(filePath);
@@ -60,8 +64,8 @@ public class UserFile
         CreateFile(newUser, filePath, tasks);
 
     }
-    public User ReadUser(string filePath)
-    {
+
+    public User ReadUser(string filePath) {
         string[] lines = File.ReadAllLines(filePath);
 
         User user = new User();
@@ -94,8 +98,7 @@ public class UserFile
         return user;
     }
 
-    public string ReadTasks(string filePath)
-    {
+    public string ReadTasks(string filePath) {
 
         string[] lines = File.ReadAllLines(filePath);
         string tasks = "";
@@ -132,83 +135,123 @@ public class UserFile
         return tasks;
     }
 
-    public void CreateFile(User user, string filePath, string? tasks)
-    {
+    public void CreateFile(User user, string filePath, string? tasks) {
         string userData = $"UserName: {user.UserName}\nUserId: {user.UserId}\nIsOp: {user.IsOp}\nDateAdded: {user.DateAdded}\nLastUpdated: {user.LastUpdated}";
 
         File.WriteAllText(filePath, userData + tasks);
     }
+
 }
 
-public class UserTasks
-{
-    public Task Check(string taskName, string filePath)
-    {
-        Task foundTask = Find(taskName, filePath);
+public class UserTasks {
+    public CheckReturn Check(string taskName, DateTime currentDate, string filePath) {
 
-        return foundTask;
+        TaskInfo foundTask = Find(taskName, currentDate, filePath);
 
+        CheckReturn response = new CheckReturn();
+
+        if(foundTask.TaskName != null) {
+            response.Found = true;
+            response.Task = foundTask;
+        } else {
+            response.Found = false;
+            response.Task = foundTask;
+        } 
+        return response;
     }
 
-    public Task Find(string taskName, string filePath)
-    {
+    public TaskInfo Find(string taskName, DateTime currentDate, string filePath) {
+
         string[] lines = File.ReadAllLines(filePath);
 
-        Task readedTask = new Task();
+        TaskInfo readedTask = new TaskInfo();
 
         if (lines.Length <= 5)
         {
             return readedTask;
         }
 
-        bool foundTask = false;
-
-        for (int i = 5; i < lines.Length; i++)
-        {
-
+        for (int i = 5; i < lines.Length; i++) {
             string line = lines[i];
 
-            if (line.StartsWith("TaskName:"))
-            {
-                readedTask.TaskName = line.Substring("TaskName:".Length).Trim();
-                if (readedTask.TaskName == taskName || readedTask.TaskName.Replace(" ", "") == taskName)
-                {
-                    foundTask = true;
-                }
-            }
-
-            if (foundTask)
-            {
-                if (line.StartsWith("TaskName:"))
-                {
+            if (line.StartsWith("TaskName:")) {
+                if (line.Substring("TaskName:".Length).Trim() == taskName || line.Substring("TaskName:".Length).Trim().Replace(" ", "") == taskName) {
                     readedTask.TaskName = line.Substring("TaskName:".Length).Trim();
-                }
-                else if (line.StartsWith("TaskDateAdded:"))
-                {
-                    readedTask.TaskDateAdded = line.Substring("TaskDateAdded:".Length).Trim();
-                }
-                else if (line.StartsWith("TaskDescription:"))
-                {
-                    readedTask.TaskDescription = line.Substring("TaskDescription:".Length).Trim();
-                    foundTask = false; //bc it's the end of a task inside the default task structure
-                    break;
+                    readedTask.TaskCreator = lines[i + 1].Substring("TaskCreator:".Length).Trim();
+
+                    string dateAdded = lines[i + 2].Substring("TaskDateAdded:".Length).Trim();
+
+
+                    string dateDifference = (currentDate - DateTime.Parse(dateAdded)).ToString(@"h\:m\:s");
+                    string[] separatedTimes = dateDifference.Split(':');
+
+                    string timeValue = "";
+                    for (int j = 0; j < separatedTimes.Length; j++) {
+                        string time = separatedTimes[j];
+
+                        if(j == 0 && time != "0"){
+                            if(time == "1"){
+                                timeValue = $"{time} hora y {separatedTimes[1]}";
+                                if(separatedTimes[1] == "1") {
+                                    timeValue = timeValue + " minuto.";
+                                } else {
+                                    timeValue = timeValue + " minutos.";
+                                }
+                                break;
+                            } else {
+                                timeValue = $"{time} horas y {separatedTimes[1]}";
+                                if(separatedTimes[1] == "1") {
+                                    timeValue = timeValue + " minuto.";
+                                } else {
+                                    timeValue = timeValue + " minutos.";
+                                }
+                                break;
+                            }
+                           
+                        } 
+                        else if (j == 1 && time != "0") {
+                            if(time == "1"){
+                                timeValue = $"{time} minuto y {separatedTimes[2]}";
+                                if(separatedTimes[2] == "1") {
+                                    timeValue = timeValue + " segundo.";
+                                } else {
+                                    timeValue = timeValue + " segundos.";
+                                }
+                                break;
+                            } else {
+                                timeValue = $"{time} minutos y {separatedTimes[2]}";
+                                if(separatedTimes[2] == "1") {
+                                    timeValue = timeValue + " segundo.";
+                                } else {
+                                    timeValue = timeValue + " segundos.";
+                                }
+                                break;
+                            }
+                           
+                        }
+                        else if (j == 2) {
+                            if(time == "1") {
+                                timeValue = time + " segundo.";
+                                break;
+                            } else {
+                                timeValue = time + " segundos.";
+                                break;
+                            }
+                        }
+                    }
+                    readedTask.CompletedTimeAgo = timeValue;
                 }
             }
         }
-
-        if(readedTask.TaskDescription == null ){
-            readedTask.TaskName = "notfound";
-            return readedTask;
-        } else return readedTask;
-
-
+        
+        return readedTask;
     }
+
 }
 
 public class CPHInline
 {
-    public bool Execute()
-    {
+    public bool Execute() {
         string currentDir = Directory.GetCurrentDirectory();
         string tasksDir = @$"{currentDir}\Tasks\DB";
 
@@ -218,6 +261,7 @@ public class CPHInline
         bool isSubscribed = (bool)args["isSubscribed"];
         bool isMod = (bool)args["isModerator"];
         bool isVip = (bool)args["isVip"];
+        string taskName = (string)args["rawInput"];
 
         bool userIsOp = isSubscribed || isVip || isMod ? true : false;
 
@@ -228,69 +272,29 @@ public class CPHInline
         //USER
         string userFilePath = Path.Combine(tasksDir, $"{userId}.txt");
 
-        User user = new User(username, userId, userIsOp, formattedDate, formattedDate);
-
-
-
+        User user = new User(username, userId, userIsOp, formattedDate, formattedDate); //creates user inside context
         UserFile userFile = new UserFile();
 
-        userFile.Check(user, userFilePath);
-
-
+        userFile.Check(user, userFilePath); // updates/creates user file
 
 
         // TASKSEARCH
         UserTasks userTasks = new UserTasks();
-
-        string taskName = (string)args["input0"];
-
-        Task foundTask = userTasks.Find(taskName, userFilePath);
-
+        CheckReturn foundTask = userTasks.Check(taskName, currentDate, userFilePath); // calls to check if any task matches taskname and returns it
 
 
         string message = "";
 
-        if (foundTask.TaskName != "notfound")
-        {
-                    string dateDifference = (currentDate - DateTime.Parse(foundTask.TaskDateAdded)).ToString(@"h\:m\:s");
-        
+        CPH.LogInfo("taskname: " + foundTask.Task.TaskName);
 
-        string[] separatedTimes = dateDifference.Split(':');
-
-        string timeValue = "";
-
-        for (int i = 0; i < separatedTimes.Length; i++)
-        {
-            string time = separatedTimes[i];
-
-            if(i == 0 && time != "0"){
-                timeValue = $"{time} horas y {separatedTimes[1]} minutos.";
-                break;
-            } 
-            else if (i == 1 && time != "0") {
-                timeValue = $"{time} minutos y {separatedTimes[2]} segundos.";
-                break;
-            }
-            else if (i == 2) {
-                timeValue = time + " segundos.";
-            }
-
+        if (foundTask.Found) {
+            message = $"Nombre de la tarea: '{foundTask.Task?.TaskName}'. Creador/a: {foundTask.Task?.TaskCreator}. Se creó hace " + foundTask.Task?.CompletedTimeAgo;
         }
-            message = $"Nombre de la tarea: {foundTask.TaskName}. Descripcion de la tarea: {foundTask.TaskDescription}. La tarea fue creada hace " + timeValue;
+        else {
+            message = "No tenés una tarea con ese nombre. Usá !taskslist para ver todas tus tareas";
         }
-        else
-        {
-            message = "No tenes una tarea con ese nombre. Usa !taskslist para ver todas tus tareas.";
-        }
-
-
 
         string msgId = (string)args["msgId"];
-
-
-
-
-        // Send the reply
         CPH.TwitchReplyToMessage(message, msgId, false, false);
 
         return true;
