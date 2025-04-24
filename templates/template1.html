@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            text-align: center;
+        }
+        .text-container {
+            font-size: 20px;
+            max-width: 80%;
+            margin: auto;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="text-container" id="text-content">Loading...</div>
+
+    <script>
+        function fetchText() {
+            fetch('createdTasks.txt') 
+                .then(response => response.text())
+                .then(text => {
+                    const lines = text.split('\n');
+                    console.log(lines);
+                    
+                })
+                .catch(error => {
+                    console.error('Error fetching text:', error);
+                    document.getElementById('text-content').innerText = 'Failed to load content';
+                });
+        }
+
+        fetchText();
+    </script>
+</body>
+</html>
