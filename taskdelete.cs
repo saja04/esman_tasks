@@ -30,6 +30,12 @@ public class Task {
     public string TaskDateAdded;
 }
 
+public class CreatedTask {
+    public string Name;
+    public string Creator;
+    public string DateAdded;
+}
+
 public class UserFile {
     public void Check(User user, string filePath) {
         if (!File.Exists(filePath))
@@ -222,10 +228,78 @@ public class UserTasks {
                 allTasksToText = allTasksToText + TaskToText(t, filePath);
             }
             newUserFile.CreateFile(user, filePath, allTasksToText);
+
+            // now to delete the task from the completedTasks file
+
+            string layoutCreatedFilePath = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(filePath)), "createdTasks.txt"); // goes two directories up
+
+
+            DeleteCreatedTask(taskName, layoutCreatedFilePath);
+
+
+
+
+
+
+
+
+
+
             return true;
+        } 
+    }
+
+    public List<CreatedTask> ReadCreatedTasksLayout (string filePath) {
+
+        string[] lines = File.ReadAllLines(filePath);
+
+        List<CreatedTask> allCreatedTasks = new List<CreatedTask>();
+        CreatedTask eachTask = new CreatedTask();
+
+        int createdTasksNumber = int.Parse(lines[0].Substring("CreatedTasks:".Length).Trim());
+
+        for(int i = 1; i <= createdTasksNumber * 3; i = i + 3){ //queued tasks forloop
+
+            eachTask.Name = lines[i].Substring("TaskName:".Length).Trim();
+            eachTask.Creator = lines[i+1].Substring("Creator:".Length).Trim();
+            eachTask.DateAdded = lines[i+2].Substring("DateAdded:".Length).Trim();
+
+            allCreatedTasks.Add(eachTask);
+            eachTask = new CreatedTask();
+        }
+        return allCreatedTasks;
+    }
+    
+    public void DeleteCreatedTask(string taskName, string filePath) {
+
+       List<CreatedTask> allReadedTasks = ReadCreatedTasksLayout(filePath);
+
+        for (int i = 0; i < allReadedTasks.Count; i++){
+            CreatedTask readedTask = allReadedTasks[i];
+            if(readedTask.Name == taskName){
+                allReadedTasks.RemoveAt(i);
+                break;
+            }
         }
 
+        string createdTasksToText = "";
+
+        foreach(CreatedTask createdTask in allReadedTasks) {
+            createdTasksToText = createdTasksToText + CreatedTaskLayoutToText(createdTask);
+        }
+
+        string createdTasksTitle = "CreatedTasks: ";
+
+        int createdTasksNumber = allReadedTasks.Count;
+
+        File.WriteAllText(filePath, createdTasksTitle + createdTasksNumber.ToString() + createdTasksToText );
     }
+
+    public string CreatedTaskLayoutToText(CreatedTask newTask) {
+        string taskText = $"\nTaskName: {newTask.Name}\nCreator: {newTask.Creator}\nDateAdded: {newTask.DateAdded}";
+        return taskText;
+    }
+
 
 }
 

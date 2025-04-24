@@ -30,6 +30,12 @@ public class Task {
     public string TaskDateAdded;
 }
 
+public class CreatedTask {
+    public string Name;
+    public string Creator;
+    public string DateAdded;
+}
+
 public class UserFile {
     public void Check(User user, string filePath) {
         if (!File.Exists(filePath))
@@ -132,8 +138,7 @@ public class UserFile {
 public class UserTasks {
     public int Check(User user, Task task, string filePath) {
 
-        if (File.Exists(filePath))
-        {
+        if (File.Exists(filePath)) {
             Task[] readedTasks = Read(filePath);
 
             if (readedTasks.Length == 5) {
@@ -148,13 +153,23 @@ public class UserTasks {
                     return 4;
                 }
             }
-        
+
+            string layoutFilePath = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(filePath)), "createdTasks.txt"); // goes two directories up and in to tasksLayout.txt
+            CreatedTask newLayoutTask = new CreatedTask(); //parse Task to CreatedTask
+            newLayoutTask.Name = task.TaskName;
+            newLayoutTask.Creator = task.TaskCreator;
+            newLayoutTask.DateAdded = task.TaskDateAdded;
+
+
             Create(task, filePath);
+            int status = UpdateLayout(newLayoutTask, layoutFilePath); // take that parsed CreatedTask and add it to the updated tasks in layout
+
             return 10;
             
         }
         else return 3;
     }
+
     public void Create(Task newTask, string filePath) {
 
         string taskData = $"TaskName: {newTask.TaskName}\nTaskCreator: {newTask.TaskCreator}\nTaskDateAdded: {newTask.TaskDateAdded}";
@@ -162,6 +177,7 @@ public class UserTasks {
         File.AppendAllText(filePath, "\n" + taskData);
 
     }
+
     public Task[] Read(string filePath) {
 
         string[] lines = File.ReadAllLines(filePath);
@@ -208,6 +224,60 @@ public class UserTasks {
         
         return allTasks.ToArray();
     }
+
+    public CreatedTask[] ReadLayout (string filePath) {
+
+        string[] lines = File.ReadAllLines(filePath);
+
+        List<CreatedTask> allCreatedTasks = new List<CreatedTask>();
+        CreatedTask eachTask = new CreatedTask();
+
+        int createdTasksNumber = int.Parse(lines[0].Substring("CreatedTasks:".Length).Trim());
+
+        for(int i = 1; i <= createdTasksNumber * 3; i = i + 3){ //queued tasks forloop
+
+            eachTask.Name = lines[i].Substring("TaskName:".Length).Trim();
+            eachTask.Creator = lines[i+1].Substring("Creator:".Length).Trim();
+            eachTask.DateAdded = lines[i+2].Substring("DateAdded:".Length).Trim();
+
+            allCreatedTasks.Add(eachTask);
+            eachTask = new CreatedTask();
+        }
+        CreatedTask[] allTasksToArray = allCreatedTasks.ToArray();
+        return allTasksToArray;
+    }
+    
+
+    public string TaskLayoutToText(CreatedTask newTask) {
+        string taskText = $"\nTaskName: {newTask.Name}\nCreator: {newTask.Creator}\nDateAdded: {newTask.DateAdded}";
+        return taskText;
+    }
+
+    public int UpdateLayout (CreatedTask newCompletedTask, string filePath) {
+
+        // OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT
+        CreatedTask[] allCreatedTasks = ReadLayout(filePath);
+
+        string createdTasksToText = "";
+
+        foreach(CreatedTask createdTask in allCreatedTasks) {
+            createdTasksToText = createdTasksToText + TaskLayoutToText(createdTask);
+        }
+        // OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT
+
+        string createdTasksTitle = "CreatedTasks: ";
+
+        int createdTasksNumber = allCreatedTasks.Length;
+
+
+        string newTaskToText = TaskLayoutToText(newCompletedTask);
+        createdTasksNumber = createdTasksNumber + 1;
+
+        File.WriteAllText(filePath, createdTasksTitle + createdTasksNumber.ToString() + newTaskToText + createdTasksToText );
+
+        return 10; //all good status code
+    }
+
 
 }
 

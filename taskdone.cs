@@ -32,17 +32,17 @@ public class Task {
     public string TaskDateAdded;
 }
 
-public class LayoutTask {
+public class CompletedTask {
     public string Name;
     public string Creator;
     public string DateCompleted;
     public string DateAdded;
 }
 
-public class TaskLayoutContainer {
-    public LayoutTask[] QueuedTasks {get; set; }
-    public LayoutTask[] CompletedTasks {get; set; }
-
+public class CreatedTask {
+    public string Name;
+    public string Creator;
+    public string DateAdded;
 }
 
 public class UserFile {
@@ -157,16 +157,17 @@ public class UserTasks
 {
     public string Check(string taskName, DateTime currentDate, string filePath){        
 
-        string layoutFilePath = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(filePath)), "tasksLayout.txt"); // goes two directories up
-        LayoutTask foundTask = Find(taskName, filePath);
+        CompletedTask foundTask = Find(taskName, filePath);
 
-        if(foundTask.DateAdded == "" || foundTask.DateAdded == null || foundTask.DateAdded.Replace(" ", "") == ""){
+        if(foundTask.Name == null || foundTask.Name.Trim() == ""){
             return "not-found"; // taskname not found on existent tasks 
         }
-
-        if(foundTask.Name != null || foundTask.Name != "" || foundTask.Name.Replace(" ","") != ""){
-            int status = UpdateLayout(foundTask, layoutFilePath);
+        else {
+            string layoutCompletedFilePath = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(filePath)), "completedTasks.txt"); // goes two directories up
+            string layoutCreatedFilePath = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(filePath)), "createdTasks.txt"); // goes two directories up
+            UpdateLayout(foundTask, layoutCompletedFilePath);
             Delete(foundTask.Name, filePath);
+            DeleteCreatedTask(foundTask.Name, layoutCreatedFilePath);
             
             string dateAdded = foundTask.DateAdded ;
             string dateDifference = (currentDate - DateTime.Parse(dateAdded)).ToString(@"h\:m\:s");
@@ -229,9 +230,6 @@ public class UserTasks
             string completedTimeAgo = timeValue;
             return completedTimeAgo; // status returns 10 if it is all ok 
         }
-
-        return "";
-
     }
 
     public string TaskToText(Task newTask, string filePath)
@@ -293,7 +291,6 @@ public class UserTasks
         return allTasks.ToArray();
     }
 
-    
     public bool Delete(string taskName, string filePath) {
 
         string[] lines = File.ReadAllLines(filePath);
@@ -306,8 +303,7 @@ public class UserTasks
 
         List<Task> remainingTasks = new List<Task>();
 
-        foreach (Task t in readedTasks)
-        {
+        foreach (Task t in readedTasks) {
             if (t.TaskName == taskName) {
                 continue;
             } 
@@ -330,10 +326,56 @@ public class UserTasks
 
     }
 
-    public LayoutTask Find(string taskName, string filePath) {
+    public List<CreatedTask> ReadCreatedTasksLayout (string filePath) {
+
         string[] lines = File.ReadAllLines(filePath);
 
-        LayoutTask readedTask = new LayoutTask();
+        List<CreatedTask> allCreatedTasks = new List<CreatedTask>();
+        CreatedTask eachTask = new CreatedTask();
+
+        int createdTasksNumber = int.Parse(lines[0].Substring("CreatedTasks:".Length).Trim());
+
+        for(int i = 1; i <= createdTasksNumber * 3; i = i + 3){ //queued tasks forloop
+
+            eachTask.Name = lines[i].Substring("TaskName:".Length).Trim();
+            eachTask.Creator = lines[i+1].Substring("Creator:".Length).Trim();
+            eachTask.DateAdded = lines[i+2].Substring("DateAdded:".Length).Trim();
+
+            allCreatedTasks.Add(eachTask);
+            eachTask = new CreatedTask();
+        }
+        return allCreatedTasks;
+    }
+    
+    public void DeleteCreatedTask(string taskName, string filePath) {
+
+       List<CreatedTask> allReadedTasks = ReadCreatedTasksLayout(filePath);
+
+        for (int i = 0; i < allReadedTasks.Count; i++){
+            CreatedTask readedTask = allReadedTasks[i];
+            if(readedTask.Name == taskName){
+                allReadedTasks.RemoveAt(i);
+                break;
+            }
+        }
+
+        string createdTasksToText = "";
+
+        foreach(CreatedTask createdTask in allReadedTasks) {
+            createdTasksToText = createdTasksToText + CreatedTaskLayoutToText(createdTask);
+        }
+
+        string createdTasksTitle = "CreatedTasks: ";
+
+        int createdTasksNumber = allReadedTasks.Count;
+
+        File.WriteAllText(filePath, createdTasksTitle + createdTasksNumber.ToString() + createdTasksToText );
+    }
+
+    public CompletedTask Find(string taskName, string filePath) {
+        string[] lines = File.ReadAllLines(filePath);
+
+        CompletedTask readedTask = new CompletedTask();
 
         if (lines.Length <= 5)
         {
@@ -343,7 +385,7 @@ public class UserTasks
         for (int i = 5; i < lines.Length; i++)
         {
             string line = lines[i];
-            if (line.StartsWith("TaskName:") && line.Substring("TaskName:".Length).Trim() == taskName || line.Substring("TaskName:".Length).Trim().Replace(" ", "") == taskName)
+            if (line.StartsWith("TaskName:") && line.Substring("TaskName:".Length).Trim() == taskName)
             {
                      readedTask.Name = line.Substring("TaskName:".Length).Trim();
                      readedTask.Creator = lines[i+1].Substring("TaskCreator:".Length).Trim();
@@ -363,105 +405,58 @@ public class UserTasks
 
     }
 
-    public TaskLayoutContainer ReadLayout (string filePath) {
+    public CompletedTask[] ReadLayout (string filePath) {
 
         string[] lines = File.ReadAllLines(filePath);
 
-        List<LayoutTask> queuedTasks = new List<LayoutTask>();
-        List<LayoutTask> completedTasks = new List<LayoutTask>();
+        List<CompletedTask> allCompletedTasks = new List<CompletedTask>();
 
-        LayoutTask layoutTask = new LayoutTask();
+        CompletedTask newCompletedTask = new CompletedTask();
 
-        int  queuedTasksNumber = 0;
-        int  completedTasksNumber = 0;
+        int completedTasksNumber = int.Parse(lines[0].Substring("CompletedTasks:".Length).Trim());
 
-        foreach(string line in lines) {
-            if(line.StartsWith("TasksInQueue:")) {
-                queuedTasksNumber = int.Parse(line.Substring("TasksInQueue:".Length).Trim());
-            } else if (line.StartsWith("CompetedTasks:")) {
-                completedTasksNumber = int.Parse(line.Substring("CompetedTasks:".Length).Trim());
-            }
+        for(int i = 1; i <= completedTasksNumber * 4; i = i + 4){
+
+            newCompletedTask.Name = lines[i].Substring("TaskName:".Length).Trim();
+            newCompletedTask.Creator = lines[i+1].Substring("Creator:".Length).Trim();
+            newCompletedTask.DateAdded = lines[i+2].Substring("DateAdded:".Length).Trim();
+            newCompletedTask.DateCompleted = lines[i+3].Substring("DateCompleted:".Length).Trim();
+
+            allCompletedTasks.Add(newCompletedTask);
+            newCompletedTask = new CompletedTask();
         }
 
-        for(int i = 1; i <= queuedTasksNumber * 4; i = i + 4){ //queued tasks forloop
-            string line = lines[i];
-
-            if(line.StartsWith("CompetedTasks:")){
-              break;
-            }
-            else {
-                layoutTask.Name = lines[i].Substring("TaskName:".Length).Trim();
-                layoutTask.Creator = lines[i+1].Substring("Creator:".Length).Trim();
-                layoutTask.DateAdded = lines[i+2].Substring("DateAdded:".Length).Trim();
-                layoutTask.DateCompleted = lines[i+3].Substring("DateCompleted:".Length).Trim();
-
-                queuedTasks.Add(layoutTask);
-                layoutTask = new LayoutTask();
-
-            }
-        }
-        for(int i = queuedTasksNumber * 4 + 2; i < lines.Length; i = i + 4) {
-                string line = lines[i];
-
-                layoutTask.Name = lines[i].Substring("TaskName:".Length).Trim();
-                layoutTask.Creator = lines[i+1].Substring("Creator:".Length).Trim();
-                layoutTask.DateAdded = lines[i+2].Substring("DateAdded:".Length).Trim();
-                layoutTask.DateCompleted = lines[i+3].Substring("DateCompleted:".Length).Trim();
-
-                completedTasks.Add(layoutTask);
-                layoutTask = new LayoutTask();
-        }
-
-        TaskLayoutContainer allTasks = new TaskLayoutContainer();
-
-        allTasks.QueuedTasks = queuedTasks.ToArray();
-        allTasks.CompletedTasks = completedTasks.ToArray();
-
-        return allTasks;
+        CompletedTask[] allCompletedTasksToArray = allCompletedTasks.ToArray();
+        return allCompletedTasksToArray;
     }
 
-    public string TaskLayoutToText(LayoutTask newTask) {
+    public string TaskLayoutToText(CompletedTask newTask) {
         string taskText = $"\nTaskName: {newTask.Name}\nCreator: {newTask.Creator}\nDateAdded: {newTask.DateAdded}\nDateCompleted: {newTask.DateCompleted}";
         return taskText;
     }
 
-    public int UpdateLayout (LayoutTask newCompletedTask, string filePath) {
+    public string CreatedTaskLayoutToText(CreatedTask newTask) {
+        string taskText = $"\nTaskName: {newTask.Name}\nCreator: {newTask.Creator}\nDateAdded: {newTask.DateAdded}";
+        return taskText;
+    }
 
-        // OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT
-        TaskLayoutContainer oldTasks = ReadLayout(filePath);
-        LayoutTask[] oldQueuedTasks = oldTasks.QueuedTasks;
-        LayoutTask[] oldCompletedTasks = oldTasks.CompletedTasks; 
+    public void UpdateLayout (CompletedTask newCompletedTask, string filePath) {
 
-        if(oldCompletedTasks.Length == 5) { // if there are already 5 completed tasks, delete the last one to make room for the new one
-            LayoutTask[] newArr = new LayoutTask[oldCompletedTasks.Length - 1];
-            Array.Copy(oldCompletedTasks, newArr, oldCompletedTasks.Length - 1);
-            oldCompletedTasks = newArr;
-        }
+        CompletedTask[] completedTasks = ReadLayout(filePath);
 
-        string queuedTasksToText = "";
         string completedTasksToText = "";
 
-        foreach(LayoutTask queuedtask in oldQueuedTasks) {
-            queuedTasksToText = queuedTasksToText + TaskLayoutToText(queuedtask);
+        foreach(CompletedTask completedTask in completedTasks) {
+            completedTasksToText = completedTasksToText + TaskLayoutToText(completedTask);
         }
-        foreach(LayoutTask completedtask in oldCompletedTasks) {
-            completedTasksToText = completedTasksToText + TaskLayoutToText(completedtask);
-        }
-        // OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT OLD TASKS TO TEXT
+        string completedTasksTitle = "CompletedTasks: ";
 
-        string queuedTitle = "TasksInQueue: ";
-        string completedTitle = "CompetedTasks: ";
-
-        int queuedTasksNumber = oldQueuedTasks.Length;
-        int completedTasksNumber = oldCompletedTasks.Length;   
-
+        int completedTasksNumber = completedTasks.Length;   
 
         string completedTaskToText = TaskLayoutToText(newCompletedTask);
         completedTasksNumber = completedTasksNumber + 1;
 
-        File.WriteAllText(filePath, queuedTitle + queuedTasksNumber.ToString() + queuedTasksToText + "\n" + completedTitle + completedTasksNumber.ToString() + completedTaskToText + completedTasksToText );
-
-        return 10; //all good status code
+        File.WriteAllText(filePath, completedTasksTitle + completedTasksNumber.ToString() + completedTaskToText + completedTasksToText );
     }
 
 }
