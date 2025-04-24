@@ -232,18 +232,7 @@ public class UserTasks {
             // now to delete the task from the completedTasks file
 
             string layoutCreatedFilePath = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(filePath)), "createdTasks.txt"); // goes two directories up
-
-
             DeleteCreatedTask(taskName, layoutCreatedFilePath);
-
-
-
-
-
-
-
-
-
 
             return true;
         } 
