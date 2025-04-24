@@ -3,12 +3,12 @@ These scripts are still in development and they should not be used until their f
 These scripts are not meant to be runned with .NET runtime any under circumbstances. The only reason why there's a .csproj is because of the VSC local linting, nothing more. Again, DO NOT TRY TO RUN THE CODE (run in Streamer.bot).
 ## Esman Tasks
 Esman Tasks is for those Study Streamers who want to give a more interactive experience for all their viewers inside their Twitch streamings.
-##### What do Esman Tasks do?
+#### What do Esman Tasks do?
 Esman Tasks gives your twitch viewers the possibility to create personal study/work tasks for them to achieve their goals and mark up their progress along yours, in an interactive way. You can show the tasks progress in your stream, for everyone to interact with the other's progress and make sense of progression among them.
 
-##### How it works?
+#### How it works?
 The first time one of your viewers uses a task command, this is going to create a .txt file with their twitch id as a name, where all their information is going to be stored. You can check this
-##### "Installation"
+#### "Installation"
 (this installation guide assumes you already have Streamer.bot downloaded and have made some basic commands with it, after configuring it for you channel and your stream app).
 Here you do not install anything. The only thing you need to do is create actions for each script, let me tell you how:
 - First let's create an action for each command. You can name them as the command that they are going to execute (eg. !taskdone command action could be name as the command itself: !taskdone).
@@ -20,7 +20,7 @@ After you created all the actions for each script, it is crucial that you run th
 Just repeat the process for all the necessary scripts and test it to make sure everything works just fine and let your viewers know of your new implementation!
   
 
-#### To Do
+### To Do
 - [X] delete task description, datecompleted and completed from all scripts.
 - [X] task names should be able to contain spaces.
 - [X] !taskdone should show how long that task took to complete, instead of the DateAdded and DateCompleted.
