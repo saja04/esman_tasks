@@ -60,5 +60,9 @@ Just repeat the process for all the necessary scripts and test it to make sure e
 - [ ] Make a script that creates all necessary files and directories for the scripts to run perfectly. //CURRENT
 
 - [ ] Make the scene for the layout to show.
+    - [ ] First make the HTML template.
+        - [ ] HTML template should have the script to fetch the text from the necessary .txt files.
+        - [ ] HTML template should have styles and animations for when tasks get added or completed. This can be done by creating the first task of each group as a custom class <p> inside the template.
+    - [ ] Then the task, taskdone, taskdelete commands should update the web source via "CPH.SlobsSetBrowserSource(scene, source, url);" method.
 
 <!-- - [ ] Add focus command (viewer can send !startfocus to save the focusTimeStarted and then !stopfocus to return how much he was on focus [returns currentDate - focusTimeStarted]). This could have a counter for the top-time-focus viewers. -->
