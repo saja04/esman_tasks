@@ -49,7 +49,7 @@ Just repeat the process for all the necessary scripts and test it to make sure e
 
 - [X] task names should be able to contain spaces.
 
-- [X] !taskdone should show how long that task took to complete, instead of the DateAdded and DateCompleted.
+- [X] !taskdone should show how long that task took to complete, instead of the DateAdded and DateCompleted. 
 
 - [X] Make the layout in 2 files, one with the completed tasks and the other one with the created tasks. They will not have a limit, but the createdTasks file must delete the first found task once someone completes it.
 
