@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Esman_Scripts")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+03d872008a773805f5de8415ca0140b4301b51ec")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5434fdf28aa8034a8178f5bdd3d2aa5c43e3298")]
 [assembly: System.Reflection.AssemblyProductAttribute("Esman_Scripts")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Esman_Scripts")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

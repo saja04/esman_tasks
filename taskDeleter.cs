@@ -1,1 +1,6 @@
 // TODO SHOULD DELETE ALL TASKS THAT HAVE MORE THAN 24HS SINCE THEY HAVE BEEN CREATED. IT'S GOING TO GO TROUGH ALL THE TASKS IN THE DB
+
+
+foeach(string directory in directories) {
+    // erase all tasks
+}

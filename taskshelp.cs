@@ -147,7 +147,7 @@ public class CPHInline
         // Get the ID of the message you're replying to
         string msgId = (string) args["msgId"];
 
-        string replyText = "!task <nombre> <desc> ━━━━━━!taskcomplete <nombre> ━━━━━━!taskdelete <nombre> ━━━━━━!taskinfo <nombre> ━━━━━━!taskslist ━━━━━━━━━━━━ 𝘴𝘰𝘭𝘰 𝘱𝘰𝘥𝘦𝘴 𝘵𝘦𝘯𝘦𝘳 𝘶𝘯𝘢 𝘵𝘢𝘳𝘦𝘢 𝘢 𝘭𝘢 𝘷𝘦𝘻, 𝘭𝘰𝘴 𝘴𝘶𝘣𝘴 𝘵𝘪𝘦𝘯𝘦𝘯 𝘩𝘢𝘴𝘵𝘢 𝟱!";
+        string replyText = "!task <nombre> ━━━━━━!taskdone <nombre> ━━━━━━!taskdelete <nombre> ━━━━━━!taskinfo <nombre> ━━━━━━!taskslist ━━━━━━━━━━━━";
 
 
         // Send the reply
