@@ -155,22 +155,82 @@ public class UserFile {
 
 public class UserTasks
 {
-    public int Check(string taskName, string filePath){        
+    public string Check(string taskName, DateTime currentDate, string filePath){        
 
         string layoutFilePath = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(filePath)), "tasksLayout.txt"); // goes two directories up
         LayoutTask foundTask = Find(taskName, filePath);
 
         if(foundTask.DateAdded == "" || foundTask.DateAdded == null || foundTask.DateAdded.Replace(" ", "") == ""){
-            return 1; // taskname not found on existent tasks
+            return "not-found"; // taskname not found on existent tasks 
         }
 
         if(foundTask.Name != null || foundTask.Name != "" || foundTask.Name.Replace(" ","") != ""){
             int status = UpdateLayout(foundTask, layoutFilePath);
             Delete(foundTask.Name, filePath);
-            return status; // status returns 10 if it is all ok 
+            
+            string dateAdded = foundTask.DateAdded ;
+            string dateDifference = (currentDate - DateTime.Parse(dateAdded)).ToString(@"h\:m\:s");
+            string[] separatedTimes = dateDifference.Split(':');
+
+            string timeValue = "";
+            for (int j = 0; j < separatedTimes.Length; j++) {
+                string time = separatedTimes[j];
+
+                if(j == 0 && time != "0"){
+                    if(time == "1"){
+                        timeValue = $"{time} hora y {separatedTimes[1]}";
+                        if(separatedTimes[1] == "1") {
+                            timeValue = timeValue + " minuto.";
+                        } else {
+                            timeValue = timeValue + " minutos.";
+                        }
+                        break;
+                    } else {
+                        timeValue = $"{time} horas y {separatedTimes[1]}";
+                        if(separatedTimes[1] == "1") {
+                            timeValue = timeValue + " minuto.";
+                        } else {
+                            timeValue = timeValue + " minutos.";
+                        }
+                        break;
+                    }
+                           
+                } 
+                else if (j == 1 && time != "0") {
+                    if(time == "1"){
+                        timeValue = $"{time} minuto y {separatedTimes[2]}";
+                        if(separatedTimes[2] == "1") {
+                            timeValue = timeValue + " segundo.";
+                        } else {
+                            timeValue = timeValue + " segundos.";
+                        }
+                        break;
+                    } else {
+                        timeValue = $"{time} minutos y {separatedTimes[2]}";
+                        if(separatedTimes[2] == "1") {
+                            timeValue = timeValue + " segundo.";
+                        } else {
+                            timeValue = timeValue + " segundos.";
+                        }
+                        break;
+                    }
+                           
+                }
+                 else if (j == 2) {
+                    if(time == "1") {
+                         timeValue = time + " segundo.";
+                         break;
+                    } else {
+                        timeValue = time + " segundos.";
+                        break;
+                       }
+                }
+            }                
+            string completedTimeAgo = timeValue;
+            return completedTimeAgo; // status returns 10 if it is all ok 
         }
 
-        return 3; // unexpected error
+        return "";
 
     }
 
@@ -409,18 +469,26 @@ public class UserTasks
 
 public class CPHInline
 {
+    private object args;
+
     public bool Execute()
     {
         string currentDir = Directory.GetCurrentDirectory();
         string tasksDir = @$"{currentDir}\Tasks\DB";
 
         //GET USER INFO FROM MESSAGE
-        string userId = (string)args["userId"];
-        string username = (string)args["user"];
-        bool isSubscribed = (bool)args["isSubscribed"];
-        bool isMod = (bool)args["isModerator"];
-        bool isVip = (bool)args["isVip"];
-        string taskName = (string)args["rawInput"];
+        string userId;
+        CPH.TryGetArg<string>("userId", out userId);
+        string username;
+        CPH.TryGetArg<string>("userName", out username);
+        bool isSubscribed;
+        CPH.TryGetArg<bool>("isSubscribed", out isSubscribed);
+        bool isMod;
+        CPH.TryGetArg<bool>("isModerator", out isMod);
+        bool isVip;
+        CPH.TryGetArg<bool>("isVip", out isVip);
+        string taskName;
+        CPH.TryGetArg<string>("rawInput", out taskName);
 
 
         bool userIsOp = isSubscribed || isVip || isMod ? true : false;
@@ -438,29 +506,29 @@ public class CPHInline
 
         UserTasks userTasks = new UserTasks();
 
-        int status = userTasks.Check(taskName, userFilePath);
+        string completedTimeAgo = userTasks.Check(taskName, currentDate, userFilePath);
 
 
         string message = "";
 
-        if(status == 10) {
-            message = "Tarea completada!";
+
+
+        if(completedTimeAgo != "" && completedTimeAgo != "not-found") {
+            message = $"✅ Completaste la tarea '{taskName}' en {completedTimeAgo}";
             CPH.LogInfo("La tarea se agrego al layout y se borro de la db del usuario");
             CPH.SendMessage(message, false, false);
 
         } 
-        else if (status == 1) {
-                message = "No existe una tarea con ese nombre";
+        else if (completedTimeAgo == "not-found") {
+                message = $"No tenés una tarea con el nombre '{taskName}'";
                 CPH.SendMessage(message, false, false);
 
         }
-        else if (status == 3) {
-                message = "Ocurrio un error inesperado al agregar la tarea al layout";
+        else if (completedTimeAgo == "") {
+                message = "Ocurrio un error inesperado al completar la tarea. Contactá con el streamer.";
                 CPH.LogInfo("Ocurrio un error inesperado al agregar la tarea al layout");
                 CPH.SendMessage(message, false, false);
         }
-
-
 
         return true;
     }
