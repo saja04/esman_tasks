@@ -10,6 +10,7 @@ Esman Tasks gives your twitch viewers the possibility to create personal study/w
 The first time one of your viewers uses a task command, this is going to create a .txt file with their twitch id as a name, where all their information is going to be stored. You can check this
 #### "Installation"
 (this installation guide assumes you already have Streamer.bot downloaded and have made some basic commands with it, after configuring it for you channel and your stream app).
+
 Here you do not install anything. The only thing you need to do is create actions for each script, let me tell you how:
 - First let's create an action for each command. You can name them as the command that they are going to execute (eg. !taskdone command action could be name as the command itself: !taskdone).
 - These actions triggers are going to be Core Commands (Command Triggered), the command to use is up to you, but I recommend you use the same as each script name, with the "!" on the beggining (eg. the taskdone script command could be just !taskdone).
