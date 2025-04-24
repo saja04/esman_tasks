@@ -2,7 +2,7 @@
 
 ==These scripts are still in development and they should not be used until their final version is complete.==
 
-==These scripts are not meant to be runned with .NET runtime any under circumbstances. The only reason why there's a .csproj is because of the VSC local linting, nothing more. Again, DO NOT TRY TO RUN THE CODE (run in Streamer.bot).==
+==These scripts are not meant to be runned with .NET runtime any under circumstances. The only reason why there's a .csproj is because of the VSC local linting, nothing more. Again, DO NOT TRY TO RUN THE CODE (run in Streamer.bot).==
 
 ## **Esman Tasks**
 
@@ -16,7 +16,8 @@ Esman Tasks gives your twitch viewers the possibility to create personal study/w
 
 #### How it works?
 
-The first time one of your viewers uses a task command, this is going to create a .txt file with their twitch id as a name, where all their information is going to be stored. You can check this
+The first time one of your viewers uses a task command, the scripts are going to create a .txt file with their twitch id as a name, where all their information is going to be stored. All the tasks they create are going to be stored in that file and two other .txt files (one directory up) which are dedicated to show all the tasks information in the layout/scene.
+These scripts use only C# standard library and are not, under any circumstance, going to send any kind of information to a third party. This is guaranteed since anyone can check the scripts code to make sure there's no back door or anything suspicios that the scripts are doing.
 
 #### "Installation"
 
