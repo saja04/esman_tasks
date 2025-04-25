@@ -13,7 +13,7 @@ Esman Tasks is for those Study Streamers who want to give a more interactive exp
 
 #### What do Esman Tasks do?
 
-Esman Tasks gives your Twitch viewers the possibility to create personal study/work tasks for them to achieve their goals and mark up their progress along yours, in an interactive way. You can show the tasks' progress in your stream, for everyone to interact with each other's progress and make sense of progression among them.
+Esman Tasks gives your Twitch viewers the possibility to create personal study/work tasks for them to achieve their goals and mark up their progress along yours, in an interactive way. You can show the tasks' progress in your stream, for everyone to interact with each other's goals and make sense of progression among them.
 
 ---
 
