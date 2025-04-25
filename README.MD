@@ -19,15 +19,15 @@ Esman Tasks gives your Twitch viewers the possibility to create personal study/w
 
 #### How it works?
 
-The first time one of your viewers uses a task command, the scripts are going to create a `.txt` file with their Twitch ID as the name, where all their information is going to be stored. All the tasks they create are going to be stored in that file and two other `.txt` files (one directory up) which are dedicated to show all the tasks' information in the layout/scene.
+These scripts use only the C# standard library and are **NOT**, under any circumstance, going to send any kind of information to a third party. Everything is runned locally on your machine and does not have access past the [Streamer.bot](https://streamer.bot/) programm. This is guaranteed since the scripts are [open source](https://en.wikipedia.org/wiki/Open_source).
 
-These scripts use only the C# standard library and are **NOT**, under any circumstance, going to send any kind of information to a third party. This is guaranteed since anyone can check the scripts' code to make sure there's no backdoor or anything suspicious that the scripts are doing.
+Once you configure all commands inside Streamer.bot, the first time one of your viewers uses a task command, the scripts are going to create a `.txt` file with their Twitch ID as the name, where all their information related to tasks is going to be stored. All the tasks they create are going to be stored in that file and two other `.txt` files (one directory up) which are dedicated to show all the tasks' information in the layout/scene. Every time anyone creates/deletes/completes a task it's going to update the Browser Source that's being displayed in the scene inside your streaming application.
 
 ---
 
 ## **Installation**
 
-(This installation guide assumes you already have Streamer.bot downloaded and have made some basic commands with it, after configuring it for your channel and your stream app).
+(This installation guide assumes you already have [Streamer.bot](https://streamer.bot/) downloaded and have made some basic commands with it, after configuring it for your channel and your stream app).
 
 Here you do not install anything. The only thing you need to do is **create actions for each script**. Let me tell you how:
 
