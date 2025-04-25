@@ -61,5 +61,5 @@ Just repeat the process for all the necessary scripts and test it to make sure e
 
 - [ ] Make the scene for the layout to show. //CURRENT
     - [ ] First make the HTML template.
-        - [ ] HTML template should have styles and animations for when tasks get added or completed. This can be done by creating the first task of each group as a custom class < p > inside the template.
+        - [ ] HTML template should have styles and animations for when tasks get added or completed. This can be done by creating the first task of each group as a custom class < p > inside the template (since those are the tasks that are going to be animated).
     - [ ] Then the task, taskdone, taskdelete commands need to create and change the HTML template via file manipulation. It will also update the web source via "CPH.SlobsSetBrowserSource(scene, source, url);" method. This means that the commands are going to update the HTML template directly (lots of work i think).
