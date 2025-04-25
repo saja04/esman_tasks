@@ -1,8 +1,8 @@
 ###### **WARNING** 🔴
 
-**== These scripts are still in development and they should not be used until their final version is complete. ==**
-
-**== These scripts are not meant to be run with .NET runtime under any circumstances. The only reason why there's a .csproj is because of the VSC local linting, nothing more. Again, DO NOT TRY TO RUN THE CODE (run in Streamer.bot). ==**
+> _These scripts are still in development and they should not be used until their final version is complete._
+>
+> _These scripts are not meant to be run with .NET runtime under any circumstances. The only reason why there's a .csproj is because of the VSC local linting, nothing more. Again, DO NOT TRY TO RUN THE CODE (run in Streamer.bot)._
 
 ---
 
