@@ -10,7 +10,6 @@
 
 Esman Tasks is for those Study Streamers who want to give a more interactive experience for all their viewers inside their Twitch streamings.
 
----
 
 #### What do Esman Tasks do?
 
