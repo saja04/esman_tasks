@@ -57,9 +57,9 @@ Just repeat the process for all the necessary scripts and test it to make sure e
 
 - [X] Create the taskdeleter, which should erase the tasks in the layout and all users tasks. This script should execute every 24 hours or at will through a !tasksclean (only for mods and broadcaster).
 
-- [ ] Make a script that creates all necessary files and directories for the scripts to run perfectly. //CURRENT
+- [X] Make a script that creates all necessary files and directories for the scripts to run perfectly.
 
-- [ ] Make the scene for the layout to show.
+- [ ] Make the scene for the layout to show. //CURRENT
     - [ ] First make the HTML template.
         - [ ] HTML template should have styles and animations for when tasks get added or completed. This can be done by creating the first task of each group as a custom class < p > inside the template.
     - [ ] Then the task, taskdone, taskdelete commands need to create and change the HTML template via file manipulation. It will also update the web source via "CPH.SlobsSetBrowserSource(scene, source, url);" method. This means that the commands are going to update the HTML template directly (lots of work i think).
