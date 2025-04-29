@@ -4,8 +4,6 @@
 >
 > _These scripts are not meant to be run with .NET runtime under any circumstances. The only reason why there's a .csproj is because of the VSC local linting, nothing more. Again, DO NOT TRY TO RUN THE CODE (run in Streamer.bot)._
 
----
-
 ## **Esman Tasks**
 
 Esman Tasks is for those Study Streamers who want to give a more interactive experience for all their viewers inside their Twitch streamings.
@@ -19,9 +17,9 @@ Esman Tasks gives your Twitch viewers the possibility to create personal study/w
 
 #### How it works?
 
-These scripts use only the C# standard library and are **NOT**, under any circumstance, going to send any kind of information to a third party. Everything is runned locally on your machine and does not have access past the [Streamer.bot](https://streamer.bot/) programm. This is guaranteed since the scripts are [open source](https://en.wikipedia.org/wiki/Open_source).
+These "scripts" use only the C# standard library and are **NOT**, under any circumstance, going to send any kind of information to a third party. Everything is runned locally on your machine and does not have access past the [Streamer.bot](https://streamer.bot/) programm/directory.
 
-Once you configure all commands inside Streamer.bot, the first time one of your viewers uses a task command, the scripts are going to create a `.txt` file with their Twitch ID as the name, where all their information related to tasks is going to be stored. All the tasks they create are going to be stored in that file and two other `.txt` files (one directory up) which are dedicated to show all the tasks' information in the layout/scene. Every time anyone creates/deletes/completes a task it's going to update the Browser Source that's being displayed in the scene inside your streaming application.
+Once you configure all the commands inside Streamer.bot, the first time one of your viewers uses a task command, the scripts are going to create a `.txt` file with their Twitch ID as the name, where all their information related to tasks is going to be stored. All the tasks they create are going to be stored in that file and two other `.txt` files (one directory up) which are dedicated to show all the tasks' information in the layout/scene. Every time anyone creates/deletes/completes a task it's going to update the browser source that's being displayed in the scene.
 
 ---
 
