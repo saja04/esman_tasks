@@ -162,7 +162,7 @@ public class UserTasks {
 
 
             Create(task, filePath);
-            int status = UpdateLayout(newLayoutTask, layoutFilePath); // take that parsed CreatedTask and add it to the updated tasks in layout
+            UpdateLayout(newLayoutTask, layoutFilePath); // take that parsed CreatedTask and add it to the updated tasks in layout
 
             return 10;
             
@@ -282,12 +282,45 @@ public class UserTasks {
 }
 
 public class Source {
-    public void SourceGenerator() {
+    public void WholeHTML(){
+        //first read the top part of the template html and append it to the html source file
+        //then append the standarized tasks (html format) and append it to the html source file
+        //finally append the final part of the teplate html to the html source file
+    }
+
+    public void ReadTopPart(string filePath) {
+        // read html template until the "<div class="current-items-container">"
+    }
+
+    public void InsertTasks(Task[] tasks){
+
+        // first it should read the layout file "currentTasks.txt" and get all current tasks (this includes the new inserted task, since the Source class is going to be initialized after the task has been added to said file)
+        
+        // then it's going to take each task and parse it to html format
+
+        // each task is going to take this format for current tasks:
+        // <div class="table-item">
+        //       <p class="task-name"></p>
+        //       <p class="task-creator"></p>
+        //       <p class="task-time"></p>
+        // </div>
+        // , and this format for completed tasks:
+        // <div class="completed-item">
+        //       <p></p>
+        //       <p></p>
+        //       <p></p>
+        //       <p></p>
+        // </div>
+
+        // then it's going to append all these updated currentTasks to the source file
 
     }
-    public void ReadFirstPart(){
-        
+
+    public void ReadBottomPart(string filePath){
+        //this function gets called after the other 2 (ReadTopPart and InsertTasks)
+        // appends the final part, which starts at the "<div class="current-items-container">", to the source file
     }
+
 }
 
 public class CPHInline {

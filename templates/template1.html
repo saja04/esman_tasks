@@ -4,15 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tasks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
       body {
         margin: 0;
-        font-family: Arial, sans-serif;
+        font-family: "Noto Sans Display", sans-serif;
         color: black;
-        /* background-image: url("https://media.discordapp.net/attachments/1080681344264314920/1365190476478812171/951458021-Sin_titulo.png?ex=680c6835&is=680b16b5&hm=3411d2c8990fdc3e41e117602b0e153a851e52568b07027bcdebaf12d8145f4e&=&format=webp&quality=lossless&width=1436&height=811");
-        background-size: cover;         
-        background-repeat: no-repeat;
-        background-position: center; */
         background-color: transparent;
         text-align: center;
         width: 100vw;
@@ -23,7 +22,6 @@
       }
       .task-container {
         width: 60%;
-        font-size: 12px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -33,18 +31,21 @@
         align-items: center;
         flex-direction: column;
         width: 80%;
+        padding: 2% 3%;
+        border-radius: 5px;
+        margin-bottom: 1vh;
+        background-color: rgba(209, 250, 184, 0.861);
       }
       .title-container {
+        font-size: 16px;
         width: 100%;
         height: 5vh;
-        font-size: 10px;
         align-items: center;
         display: flex;
-        justify-content: center;
-        background-color: rgba(255, 255, 255, 0.908);
+        justify-content: left;
       }
-      .title-container{
-        font-size: 8px;
+      .title-container h2{
+        font-weight: 900;
       }
       .current-table {
         width: 100%;
@@ -53,16 +54,28 @@
         flex-direction: column;
       } 
       .current-title-container {
-        width: 58%;
-        height: 5vh;
-        justify-content: space-between;
+        border: 2px solid rgba(0, 0, 0, 0.495);
+        font-size: 16px;
+        font-weight: lighter;
+        width: 100%;
+        height: 6vh;
+        justify-content: right;
         align-items: center;
-        padding-left: 27%;
-        padding-right: 15%;
         display: flex;
         flex-direction: row;
-        background-color: rgb(218, 243, 204);
-
+        background-color: rgba(169, 241, 128, 0.914);
+      }
+      .current-title-container h4{
+        font-weight: 800;
+      }
+      .current-title-name {
+        padding-right: 35.5%;
+      }
+      .current-title-creator {
+        padding-right: 12.5%;
+      }
+      .current-title-time {
+        padding-right: 4%;
       }
       .current-items-container {
         width: 100%;
@@ -71,31 +84,65 @@
         align-items: center;
       }
       .table-item {
+        font-size: 16px;
+        font-weight: 700;
         display: grid;
-        grid-template-columns: 80% 20%;
+        grid-template-columns: 55% 35% 10%;
+        padding: 0 2.5% 0 0;
         align-content: center;
+        align-items: center;
         width: 100%;
-        height: 4vh;
-        padding: 0 10%;
+        height: 6vh;
         box-sizing: border-box;
-        background-color: rgb(184, 250, 185);
+        background-color: rgba(209, 250, 184, 0.861);
         border-bottom: .1em solid rgba(0, 0, 0, 0.134);
       }
       .task-creator {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 40%;
+        overflow: hidden;
+        height: 50%;
+        width: 100%;
       }
       .task-name {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 60%;
+        height: 50%;
+        width: 100%;
+        overflow: hidden;
+      }
+      .task-time{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 50%;
+        width: 100%;
+        overflow: hidden;
       }
 
       /* COMPLETED TASKS */
-
+      .completed-task-container{
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        width: 80%;
+        padding: 2% 3%;
+        border-radius: 5px;
+        background-color: rgba(242, 250, 184, 0.861);
+      }
+      .completed-title{
+        font-size: 16px;
+        width: 100%;
+        height: 5vh;
+        align-items: center;
+        display: flex;
+        justify-content: left;
+      }
+      .completed-title h2{
+        font-weight: 900;
+      }
       .completed-table{
         width: 100%;
         display: flex;
@@ -103,29 +150,35 @@
         flex-direction: column;
       }
       .completed-title-container{
+        border: 2px solid rgba(0, 0, 0, 0.495);
         width: 100%;
-        height: 5vh;
+        height: 6vh;
+        font-size: 16px;
         align-items: center;
-        background-color: rgb(246, 158, 158);
+        background-color: rgba(246, 201, 158, 0.919);
         display: grid;
         align-content: center;
         justify-content: right;
-        grid-template-columns: 33% 31% 16% 12%;
+        grid-template-columns: 50% 29% 12% 10%;
       }
-
-
-      .completed-item{
-        font-size: 14px;
+      .completed-title-container h4{
+        font-weight: 800;
+      }
+      .completed-item {
+        font-size: 15px;
         display: grid;
-        grid-template-columns: 35% 45% 15% 20%;
-        align-content: center;
-        /* justify-content: center; */
+        grid-template-columns: 48% 30% 12% 10%;
+        align-items: center;
         width: 100%;
-        height: 5vh;
-        padding: 0 10%;
+        height: 6vh;
         box-sizing: border-box;
-        background-color: rgb(184, 250, 185);
+        background-color: rgba(242, 250, 184, 0.861);
         border-bottom: .1em solid rgba(0, 0, 0, 0.134);
+        overflow: hidden;
+      }
+      .completed-item p {
+        font-weight: 700;
+        height: 50%;
         overflow: hidden;
       }
 
@@ -140,17 +193,19 @@
         </div>
         <div class="current-table">
           <div class="current-title-container">
-            <h4>TAREA</h4>
-            <h4>CREADOR@</h4>
+            <h4 class="current-title-name">TAREA</h4>
+            <h4 class="current-title-creator">CREADOR@</h4>
+            <h4 class="current-title-time">HORA</h4>
           </div>
           <div class="current-items-container">
             <div class="table-item">
-              <p class="task-name">TERMINAR TP QUIMICA 1</p>
-              <p class="task-creator">EL_ZEKKE_PEKKE_XD</p>
+              <p class="task-name"></p>
+              <p class="task-creator"></p>
+              <p class="task-time"></p>
             </div>
             <div class="table-item">
-              <p class="task-name">TAREA PENDIENTE</p>
-              <p class="task-creator">EL_ZEKKE</p>
+              <p class="task-name"></p>
+              <p class="task-creator"></p>
             </div>
             <div class="table-item">
               <p class="task-name"></p>
@@ -169,8 +224,8 @@
       </div>
 
       <!-- COMPLETED TASKS -->
-      <div class="current-task-container">
-        <div class="title-container">
+      <div class="completed-task-container">
+        <div class="completed-title">
           <h2>TAREAS COMPLETADAS</h2>
         </div>
         <div class="completed-table">
@@ -180,37 +235,37 @@
             <h4 class="title-completed">TIEMPO</h4>
             <h4 class="title-completed">HORA</h4>
           </div>
-
+<!-- FIRST PART -->
           <div class="current-items-container">
             <div class="completed-item">
-              <p class="completed-name">TERMINAR TP QUIMICA 1</p>
-              <p class="completed-creator">EL_ZEKKE_PEKKE_XD</p>
-              <p class="completed-completed">00:59:21</p>
-              <p class="completed-time">06:23</p>
+              <p></p>
+              <p></p>
+              <p></p>
+              <p></p>
             </div>
             <div class="completed-item">
-              <p class="completed-name">TAREA PENDIENTE</p>
-              <p class="completed-creator">EL_ZEKKE</p>
-              <p class="completed-completed">00:11:54</p>
-              <p class="completed-time">06:01</p>
+              <p></p>
+              <p></p>
+              <p></p>
+              <p></p>
             </div>
             <div class="completed-item">
-              <p class="completed-name">TAREA PENDIENTE</p>
-              <p class="completed-creator">N3Y876438728</p>
-              <p class="completed-completed">00:11:54</p>
-              <p class="completed-time">06:01</p>
-            </div>            
-            <div class="completed-item">
-              <p class="completed-name">TAREA PENDIENTE</p>
-              <p class="completed-creator">DDARIANAMUSSE</p>
-              <p class="completed-completed">00:11:54</p>
-              <p class="completed-time">06:01</p>
+              <p></p>
+              <p></p>
+              <p></p>
+              <p></p>
             </div>
             <div class="completed-item">
-              <p class="completed-name">TAREA PENDIENTE</p>
-              <p class="completed-creator">QUAMFY_BOY</p>
-              <p class="completed-completed">00:11:54</p>
-              <p class="completed-time">06:01</p>
+              <p></p>
+              <p></p>
+              <p></p>
+              <p></p>
+            </div>
+            <div class="completed-item">
+              <p></p>
+              <p></p>
+              <p></p>
+              <p></p>
             </div>
           </div>
           
@@ -221,3 +276,4 @@
     </div>
   </body>
 </html>
+<!--FINAL PART -->
