@@ -1,44 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tasks</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            color: white;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            text-align: center;
-        }
-        .text-container {
-            font-size: 20px;
-            max-width: 80%;
-            margin: auto;
-            word-wrap: break-word;
-        }
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        color: black;
+        /* background-image: url("https://media.discordapp.net/attachments/1080681344264314920/1365190476478812171/951458021-Sin_titulo.png?ex=680c6835&is=680b16b5&hm=3411d2c8990fdc3e41e117602b0e153a851e52568b07027bcdebaf12d8145f4e&=&format=webp&quality=lossless&width=1436&height=811");
+        background-size: cover;         
+        background-repeat: no-repeat;
+        background-position: center; */
+        background-color: transparent;
+        text-align: center;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .task-container {
+        width: 60%;
+        font-size: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .current-task-container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        width: 80%;
+      }
+      .title-container {
+        width: 100%;
+        height: 5vh;
+        font-size: 10px;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.908);
+      }
+      .title-container{
+        font-size: 8px;
+      }
+      .current-table {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      } 
+      .current-title-container {
+        width: 58%;
+        height: 5vh;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 27%;
+        padding-right: 15%;
+        display: flex;
+        flex-direction: row;
+        background-color: rgb(218, 243, 204);
+
+      }
+      .current-items-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .table-item {
+        display: grid;
+        grid-template-columns: 80% 20%;
+        align-content: center;
+        width: 100%;
+        height: 4vh;
+        padding: 0 10%;
+        box-sizing: border-box;
+        background-color: rgb(184, 250, 185);
+        border-bottom: .1em solid rgba(0, 0, 0, 0.134);
+      }
+      .task-creator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40%;
+      }
+      .task-name {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60%;
+      }
+
+      /* COMPLETED TASKS */
+
+      .completed-table{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+      .completed-title-container{
+        width: 100%;
+        height: 5vh;
+        align-items: center;
+        background-color: rgb(246, 158, 158);
+        display: grid;
+        align-content: center;
+        justify-content: right;
+        grid-template-columns: 33% 31% 16% 12%;
+      }
+
+
+      .completed-item{
+        font-size: 14px;
+        display: grid;
+        grid-template-columns: 35% 45% 15% 20%;
+        align-content: center;
+        /* justify-content: center; */
+        width: 100%;
+        height: 5vh;
+        padding: 0 10%;
+        box-sizing: border-box;
+        background-color: rgb(184, 250, 185);
+        border-bottom: .1em solid rgba(0, 0, 0, 0.134);
+        overflow: hidden;
+      }
+
     </style>
-</head>
-<body>
-    <div class="text-container" id="text-content">Loading...</div>
+  </head>
+  <body>
+    <div class="task-container" id="task-container">
+      <!-- CURRENT TASKS -->
+      <div class="current-task-container">
+        <div class="title-container">
+          <h2>TAREAS ACTIVAS</h2>
+        </div>
+        <div class="current-table">
+          <div class="current-title-container">
+            <h4>TAREA</h4>
+            <h4>CREADOR@</h4>
+          </div>
+          <div class="current-items-container">
+            <div class="table-item">
+              <p class="task-name">TERMINAR TP QUIMICA 1</p>
+              <p class="task-creator">EL_ZEKKE_PEKKE_XD</p>
+            </div>
+            <div class="table-item">
+              <p class="task-name">TAREA PENDIENTE</p>
+              <p class="task-creator">EL_ZEKKE</p>
+            </div>
+            <div class="table-item">
+              <p class="task-name"></p>
+              <p class="task-creator"></p>
+            </div>
+            <div class="table-item">
+              <p class="task-name"></p>
+              <p class="task-creator"></p>
+            </div>
+            <div class="table-item">
+              <p class="task-name"></p>
+              <p class="task-creator"></p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <script>
-        function fetchText() {
-            fetch('createdTasks.txt') 
-                .then(response => response.text())
-                .then(text => {
-                    const lines = text.split('\n');
-                    console.log(lines);
-                    
-                })
-                .catch(error => {
-                    console.error('Error fetching text:', error);
-                    document.getElementById('text-content').innerText = 'Failed to load content';
-                });
-        }
+      <!-- COMPLETED TASKS -->
+      <div class="current-task-container">
+        <div class="title-container">
+          <h2>TAREAS COMPLETADAS</h2>
+        </div>
+        <div class="completed-table">
+          <div class="completed-title-container">
+            <h4 class="title-name">TAREA</h4>
+            <h4 class="title-creator">CREADOR@</h4>
+            <h4 class="title-completed">TIEMPO</h4>
+            <h4 class="title-completed">HORA</h4>
+          </div>
 
-        fetchText();
-    </script>
-</body>
+          <div class="current-items-container">
+            <div class="completed-item">
+              <p class="completed-name">TERMINAR TP QUIMICA 1</p>
+              <p class="completed-creator">EL_ZEKKE_PEKKE_XD</p>
+              <p class="completed-completed">00:59:21</p>
+              <p class="completed-time">06:23</p>
+            </div>
+            <div class="completed-item">
+              <p class="completed-name">TAREA PENDIENTE</p>
+              <p class="completed-creator">EL_ZEKKE</p>
+              <p class="completed-completed">00:11:54</p>
+              <p class="completed-time">06:01</p>
+            </div>
+            <div class="completed-item">
+              <p class="completed-name">TAREA PENDIENTE</p>
+              <p class="completed-creator">N3Y876438728</p>
+              <p class="completed-completed">00:11:54</p>
+              <p class="completed-time">06:01</p>
+            </div>            
+            <div class="completed-item">
+              <p class="completed-name">TAREA PENDIENTE</p>
+              <p class="completed-creator">DDARIANAMUSSE</p>
+              <p class="completed-completed">00:11:54</p>
+              <p class="completed-time">06:01</p>
+            </div>
+            <div class="completed-item">
+              <p class="completed-name">TAREA PENDIENTE</p>
+              <p class="completed-creator">QUAMFY_BOY</p>
+              <p class="completed-completed">00:11:54</p>
+              <p class="completed-time">06:01</p>
+            </div>
+          </div>
+          
+
+
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

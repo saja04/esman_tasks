@@ -281,6 +281,15 @@ public class UserTasks {
 
 }
 
+public class Source {
+    public void SourceGenerator() {
+
+    }
+    public void ReadFirstPart(){
+        
+    }
+}
+
 public class CPHInline {
     public bool Execute()
     {
